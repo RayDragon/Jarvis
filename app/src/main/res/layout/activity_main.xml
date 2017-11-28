@@ -5,12 +5,8 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="com.hashbook.www.jarvis.MainActivity">
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="listen"
-        android:id="@+id/main_bt1"/>
+    tools:context="com.hashbook.www.jarvis.MainActivity"
+    android:background="#aaaaaa">
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -30,15 +26,36 @@
             android:layout_weight="1"
             android:id="@+id/main_ser_bt2"/>
     </LinearLayout>
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent">
-        <TextView
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_height="wrap_content"
+        >
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text=""
-            android:id="@+id/main_tv1"
+            android:background="@drawable/lb1off"
+            android:id="@+id/dlight"
+            android:soundEffectsEnabled="true"
             />
-    </ScrollView>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/olight"
+            android:layout_height="match_parent"
+            android:background="@drawable/lb2off"
+            android:soundEffectsEnabled="true"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/fan"
+            android:layout_height="match_parent"
+            android:background="@drawable/fanoff"
+            android:soundEffectsEnabled="true"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>

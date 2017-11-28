@@ -4,17 +4,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.JsonElement;
+import com.hashbook.www.jarvis.jarvisextra.JarvisWork;
 
-import java.sql.Time;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -23,7 +17,6 @@ import ai.api.android.AIConfiguration;
 import ai.api.android.AIService;
 import ai.api.model.Result;
 
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 import static java.lang.Thread.sleep;
 
 /**
@@ -37,6 +30,7 @@ public class JarvisServis extends Service implements AIListener
     JarvisWork jw;
     private AIService aiService;
     String log;
+    Intent i;
 
     public JarvisServis() {
         super();
@@ -61,7 +55,7 @@ public class JarvisServis extends Service implements AIListener
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        this.i = intent;
 
         final AIConfiguration config = new AIConfiguration("5444ff5dfb844256a67c31b2a9e62ded",
                 AIConfiguration.SupportedLanguages.English,
@@ -103,25 +97,8 @@ public class JarvisServis extends Service implements AIListener
 
     @Override
     public void onResult(ai.api.model.AIResponse result) {
-        Result result1= result.getResult();
-
-        String paramString = "";
-        if (result1.getParameters() != null && !result1.getParameters().isEmpty()) {
-            for (final Map.Entry<String, JsonElement> entry : result1.getParameters().entrySet()) {
-                paramString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
-            }
-        }
-        String extra="";
-
-
-        if(result1.getAction().equals("1")){ jw.JarvisSwitchChange(2, true);}
-        else if(result1.getAction().equals("2")){ jw.JarvisSwitchChange(2, false);}
-        else if(result1.getAction().equals("3")){ jw.JarvisSwitchChange(6, true);}
-        else if(result1.getAction().equals("4")){ jw.JarvisSwitchChange(6, false);}
-        else if(result1.getAction().equals("5")){ jw.JarvisSwitchChange(3, true);}
-        else if(result1.getAction().equals("6")){ jw.JarvisSwitchChange(3, false);}
-        else if(result1.getAction().equals("7")){ extra+= jw.getWorkDone("7");}
-        tspeak.speak(result1.getFulfillment().getSpeech()+" "+extra, TextToSpeech.QUEUE_FLUSH, null);
+        String fResult = jw.process(result);
+        tspeak.speak(fResult, TextToSpeech.QUEUE_FLUSH, null);
         final Thread wait = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -143,8 +120,9 @@ public class JarvisServis extends Service implements AIListener
     @Override
     public void onError(ai.api.model.AIError error) {
         //tv.setText(error.toString());
-        SRManager.mPocketSphinxRecognizer.startListening(SRManager.KWS_SEARCH);
+        ///SRManager.mPocketSphinxRecognizer.startListening(SRManager.KWS_SEARCH);
 
+        this.stopService(this.i);
     }
 
     @Override
